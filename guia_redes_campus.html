@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía: Red Campus Segura</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f9fa;
+  --surface: #ffffff;
+  --border: #e2e6ea;
+  --border-strong: #ced4da;
+  --text: #212529;
+  --text-muted: #6c757d;
+  --text-light: #adb5bd;
+  --accent: #3a5a8c;
+  --accent-soft: #eef2f8;
+  --accent-mid: #c5d3e8;
+  --green: #2d6a4f;
+  --green-bg: #f0faf5;
+  --red: #9b2335;
+  --red-bg: #fdf2f3;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --radius: 6px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.6; }
+.container { max-width: 980px; margin: 0 auto; padding: 40px 24px 80px; }
+
+header { margin-bottom: 36px; padding-bottom: 24px; border-bottom: 2px solid var(--border); }
+.badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.badge { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 3px; border: 1px solid var(--border-strong); color: var(--text-muted); background: var(--surface); }
+h1 { font-size: 26px; font-weight: 700; color: var(--text); line-height: 1.2; }
+h1 em { font-style: normal; color: var(--accent); }
+.subtitle { color: var(--text-muted); margin-top: 6px; font-size: 13px; max-width: 560px; }
+
+.tabs { display: flex; gap: 2px; margin-bottom: 28px; border-bottom: 2px solid var(--border); flex-wrap: wrap; }
+.tab-btn { font-family: var(--sans); font-size: 13px; font-weight: 500; padding: 10px 18px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; border-radius: var(--radius) var(--radius) 0 0; }
+.tab-btn:hover { color: var(--text); background: var(--accent-soft); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; background: var(--accent-soft); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.info-box { background: var(--accent-soft); border: 1px solid var(--accent-mid); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 24px; font-size: 13px; color: #3d5277; line-height: 1.7; }
+.info-box strong { color: var(--accent); font-weight: 600; }
+
+.steps-flow { display: flex; flex-direction: column; }
+.step-card { position: relative; display: grid; grid-template-columns: 52px 1fr; cursor: pointer; }
+.step-card::after { content: ''; position: absolute; left: 25px; top: 50px; width: 2px; height: calc(100% - 14px); background: var(--border); z-index: 0; }
+.step-card:last-child::after { display: none; }
+.step-num { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding-top: 14px; }
+.num-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 12px; font-weight: 600; border: 2px solid var(--border-strong); background: var(--surface); color: var(--text-muted); transition: all 0.2s; flex-shrink: 0; }
+.step-card:hover .num-circle, .step-card.open .num-circle { border-color: var(--accent); background: var(--accent); color: white; }
+.step-body { padding: 14px 0 14px 18px; }
+.step-header { display: flex; align-items: center; gap: 10px; }
+.step-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent-mid); font-weight: 600; }
+.step-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.chevron { margin-left: auto; color: var(--text-light); font-size: 11px; transition: transform 0.2s; flex-shrink: 0; }
+.step-card.open .chevron { transform: rotate(180deg); color: var(--accent); }
+.step-device { font-size: 11px; color: var(--text-muted); margin: 3px 0 5px; font-family: var(--mono); }
+.step-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+.step-detail { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.step-card.open .step-detail { max-height: 1400px; }
+.detail-inner { padding: 14px 0 20px; }
+
+.why-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; margin-bottom: 12px; font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+.why-box .label { font-weight: 600; color: var(--text); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: block; }
+.why-box .no-when { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); color: var(--red); font-size: 12px; }
+.why-box .no-when strong { color: var(--red); }
+
+.code-block { background: #1a1f2e; border-radius: var(--radius); overflow: hidden; margin-bottom: 10px; }
+.code-header { background: #13161f; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #252b3b; }
+.code-label { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: #5a6a7e; }
+.code-device { font-family: var(--mono); font-size: 10px; color: #5b8dd9; background: rgba(91,141,217,0.1); padding: 2px 8px; border-radius: 3px; }
+.code-body { padding: 14px 18px; font-family: var(--mono); font-size: 12.5px; line-height: 2; color: #cdd6f4; overflow-x: auto; }
+.t-cmd    { color: #89b4fa; }
+.t-key    { color: #a6e3a1; }
+.t-val    { color: #fab387; }
+.t-num    { color: #f38ba8; }
+.t-comment{ color: #444c66; font-style: italic; }
+.t-prompt { color: #585b70; }
+.t-imp    { color: #f9e2af; font-weight: 600; }
+
+.show-strip { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.show-pill { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border-radius: 4px; background: var(--accent-soft); border: 1px solid var(--accent-mid); color: var(--accent); }
+
+.expand-all-btn { display: inline-flex; align-items: center; gap: 6px; font-family: var(--sans); font-size: 12px; font-weight: 500; padding: 7px 16px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text-muted); cursor: pointer; border-radius: var(--radius); margin-bottom: 20px; transition: all 0.15s; }
+.expand-all-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+/* Diagram */
+.diagram-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 28px; }
+.diagram-title { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; color: var(--text-light); text-transform: uppercase; margin-bottom: 16px; text-align: center; }
+.legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+svg.network { width: 100%; height: auto; }
+
+/* Read tab */
+.section-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.question-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; margin-bottom: 32px; }
+.q-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; transition: border-color 0.15s; }
+.q-card:hover { border-color: var(--accent-mid); }
+.q-num { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 5px; letter-spacing: 1px; }
+.q-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 7px; line-height: 1.4; }
+.q-body { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+.q-body .hi { color: var(--green); font-weight: 600; }
+.q-card.danger { border-color: #f5c2c7; background: var(--red-bg); }
+.q-card.danger .q-title { color: var(--red); }
+
+/* Ref tab */
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px,1fr)); gap: 14px; }
+.ref-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.ref-header { padding: 10px 16px; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: var(--accent-soft); color: var(--accent); border-bottom: 1px solid var(--accent-mid); }
+.ref-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 14px; border-top: 1px solid var(--border); align-items: start; }
+.ref-cmd { font-family: var(--mono); font-size: 11px; color: #1a3a6b; word-break: break-all; }
+.ref-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="badge-row">
+    <span class="badge">CCNA</span>
+    <span class="badge">Packet Tracer</span>
+    <span class="badge">VTP · STP · Port-Security · OSPF</span>
+  </div>
+  <h1>Red Campus Segura <em>con VLANs</em></h1>
+  <p class="subtitle">Orden lógico de configuración, comandos completos y método para leer cualquier diagrama en el examen.</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('flujo',this)">① Flujo de Configuración</button>
+  <button class="tab-btn" onclick="switchTab('diagrama',this)">② Diagrama de Red</button>
+  <button class="tab-btn" onclick="switchTab('leer',this)">③ Cómo Leer un Diagrama</button>
+  <button class="tab-btn" onclick="switchTab('ref',this)">④ Referencia Rápida</button>
+</div>
+
+<!-- ═══ TAB 1 ═══ -->
+<div id="tab-flujo" class="tab-panel active">
+  <div class="info-box">
+    <strong>Regla de oro:</strong> configura siempre de <strong>infraestructura → servicios</strong>. Sin VLANs no puedes hacer trunks. Sin trunks VTP no propaga nada. Sin VTP distribuido no puedes enrutar inter-VLAN. Haz clic en cada paso para ver los comandos completos.
+  </div>
+  <button class="expand-all-btn" onclick="toggleAll(this)">▼ Expandir todos los pasos</button>
+
+  <div class="steps-flow">
+
+    <!-- 01 VTP -->
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-num"><div class="num-circle">01</div></div>
+      <div class="step-body">
+        <div class="step-header">
+          <span class="step-tag">VTP</span>
+          <span class="step-title">Configurar VTP</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-device">S1 → servidor &nbsp;|&nbsp; S2, S3 → clientes</div>
+        <div class="step-desc">Establece quién administra las VLANs y las distribuye automáticamente.</div>
+        <div class="step-detail"><div class="detail-inner">
+          <div class="why-box">
+            <span class="label">¿Por qué primero?</span>
+            VTP es el "mensajero" de las VLANs. Si creas VLANs antes de configurarlo, los clientes no las recibirán. El dominio y la contraseña <strong>deben coincidir exactamente</strong> en todos los switches.
+            <div class="no-when"><strong>¿Cuándo NO lo configuro?</strong> Si el diagrama tiene un solo switch, o todos los switches son independientes sin VLANs compartidas.</div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">S1 — Servidor VTP</span><span class="code-device">Switch(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">S1(config)#</span> <span class="t-cmd">vtp domain</span> <span class="t-val">UPEMOR</span>          <span class="t-comment">! mismo nombre en TODOS los switches</span>
+<span class="t-prompt">S1(config)#</span> <span class="t-cmd">vtp mode</span> <span class="t-key">server</span>               <span class="t-comment">! puede crear/borrar VLANs</span>
+<span class="t-prompt">S1(config)#</span> <span class="t-cmd">vtp password</span> <span class="t-val">cisco</span>             <span class="t-comment">! misma contraseña en todos</span>
+<span class="t-prompt">S1(config)#</span> <span class="t-cmd">vtp version</span> <span class="t-num">2</span>
+<span class="t-prompt">S1(config)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">S1#</span> <span class="t-cmd">wr</span>
+            </div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">S2 y S3 — Clientes VTP</span><span class="code-device">Switch(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">S2(config)#</span> <span class="t-cmd">vtp domain</span> <span class="t-val">UPEMOR</span>
+<span class="t-prompt">S2(config)#</span> <span class="t-cmd">vtp mode</span> <span class="t-key">client</span>               <span class="t-comment">! solo recibe VLANs, NO puede crearlas</span>
+<span class="t-prompt">S2(config)#</span> <span class="t-cmd">vtp password</span> <span class="t-val">cisco</span>
+<span class="t-prompt">S2(config)#</span> <span class="t-cmd">vtp version</span> <span class="t-num">2</span>
+<span class="t-prompt">S2(config)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">S2#</span> <span class="t-cmd">wr</span>
+            </div>
+          </div>
+          <div class="show-strip">
+            <span class="show-pill">show vtp status</span>
+            <span class="show-pill">show vlan brief</span>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 02 VLANs -->
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-num"><div class="num-circle">02</div></div>
+      <div class="step-body">
+        <div class="step-header">
+          <span class="step-tag">VLANs</span>
+          <span class="step-title">Crear VLANs</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-device">Solo en S1 (servidor VTP)</div>
+        <div class="step-desc">Define los segmentos lógicos. VTP las propagará a S2 y S3 automáticamente.</div>
+        <div class="step-detail"><div class="detail-inner">
+          <div class="why-box">
+            <span class="label">¿Por qué después de VTP?</span>
+            Al crear VLANs en el servidor, VTP incrementa su "Configuration Revision" y las distribuye a los clientes por los trunks.
+            <div class="no-when"><strong>¿Cuándo NO creo múltiples VLANs?</strong> Si el diagrama tiene una sola red sin segmentación lógica.</div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">S1 — Creación de VLANs (5 VLANs)</span><span class="code-device">Switch(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">S1(config)#</span> <span class="t-cmd">vlan</span> <span class="t-num">10</span>
+<span class="t-prompt">S1(config-vlan)#</span> <span class="t-cmd">name</span> <span class="t-val">ADMIN</span>
+<span class="t-prompt">S1(config-vlan)#</span> <span class="t-cmd">vlan</span> <span class="t-num">20</span>
+<span class="t-prompt">S1(config-vlan)#</span> <span class="t-cmd">name</span> <span class="t-val">DOCENTES</span>
+<span class="t-prompt">S1(config-vlan)#</span> <span class="t-cmd">vlan</span> <span class="t-num">30</span>
+<span class="t-prompt">S1(config-vlan)#</span> <span class="t-cmd">name</span> <span class="t-val">ALUMNOS</span>
+<span class="t-prompt">S1(config-vlan)#</span> <span class="t-cmd">vlan</span> <span class="t-num">40</span>
+<span class="t-prompt">S1(config-vlan)#</span> <span class="t-cmd">name</span> <span class="t-val">LABS</span>
+<span class="t-prompt">S1(config-vlan)#</span> <span class="t-cmd">vlan</span> <span class="t-num">50</span>
+<span class="t-prompt">S1(config-vlan)#</span> <span class="t-cmd">name</span> <span class="t-val">INVITADOS</span>
+<span class="t-prompt">S1(config-vlan)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">S1#</span> <span class="t-cmd">wr</span>
+            </div>
+          </div>
+          <div class="show-strip"><span class="show-pill">show vlan brief</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 03 TRUNKS -->
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-num"><div class="num-circle">03</div></div>
+      <div class="step-body">
+        <div class="step-header">
+          <span class="step-tag">Trunks</span>
+          <span class="step-title">Configurar Trunks 802.1Q</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-device">Todos los switches — puertos switch↔switch y switch↔router</div>
+        <div class="step-desc">Las "autopistas" que transportan múltiples VLANs etiquetadas entre dispositivos.</div>
+        <div class="step-detail"><div class="detail-inner">
+          <div class="why-box">
+            <span class="label">¿Por qué ahora?</span>
+            Sin trunks las VLANs no viajan entre switches ni llega la info VTP a los clientes. <strong>Cable switch↔switch o switch↔router = trunk. Cable switch↔PC = access.</strong>
+            <div class="no-when"><strong>¿Cuándo NO es trunk?</strong> Puertos a PCs o impresoras son siempre access.</div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">S1, S2, S3 — Trunks entre switches</span><span class="code-device">Switch(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">Sx(config)#</span> <span class="t-cmd">interface range</span> <span class="t-val">gi0/1-2</span>          <span class="t-comment">! ajustar según modelo del switch</span>
+<span class="t-prompt">Sx(config-if-range)#</span> <span class="t-cmd">switchport mode</span> <span class="t-key">trunk</span>
+<span class="t-prompt">Sx(config-if-range)#</span> <span class="t-cmd">switchport trunk allowed vlan</span> <span class="t-num">10,20,30,40,50</span>
+<span class="t-prompt">Sx(config-if-range)#</span> <span class="t-cmd">no shutdown</span>
+<span class="t-prompt">Sx(config-if-range)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">Sx#</span> <span class="t-cmd">wr</span>
+            </div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">S1 — Puerto trunk hacia R1 (router-on-a-stick)</span><span class="code-device">Switch(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">S1(config)#</span> <span class="t-cmd">interface</span> <span class="t-val">gi0/0</span>                   <span class="t-comment">! puerto que va al router</span>
+<span class="t-prompt">S1(config-if)#</span> <span class="t-cmd">switchport mode</span> <span class="t-key">trunk</span>
+<span class="t-prompt">S1(config-if)#</span> <span class="t-cmd">switchport trunk allowed vlan</span> <span class="t-num">10,20,30,40,50</span>
+<span class="t-prompt">S1(config-if)#</span> <span class="t-cmd">no shutdown</span>
+<span class="t-prompt">S1(config-if)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">S1#</span> <span class="t-cmd">wr</span>
+            </div>
+          </div>
+          <div class="show-strip">
+            <span class="show-pill">show interfaces trunk</span>
+            <span class="show-pill">show interfaces status</span>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 04 STP -->
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-num"><div class="num-circle">04</div></div>
+      <div class="step-body">
+        <div class="step-header">
+          <span class="step-tag">STP</span>
+          <span class="step-title">Spanning Tree — Root Bridge</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-device">S1 → root primary &nbsp;|&nbsp; S2 → root secondary</div>
+        <div class="step-desc">Previene bucles de capa 2. Con S1–S2–S3 en triángulo, STP bloqueará un puerto automáticamente.</div>
+        <div class="step-detail"><div class="detail-inner">
+          <div class="why-box">
+            <span class="label">¿Por qué después de los trunks?</span>
+            STP actúa sobre los enlaces troncales. Sin trunks no hay topología de bucle que proteger. PVST crea una instancia STP por VLAN.
+            <div class="no-when"><strong>¿Cuándo NO configuro root manualmente?</strong> Si solo hay 2 switches (sin bucle posible), STP funciona solo. Solo configura root cuando hay 3+ switches formando un triángulo.</div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">S1 — Root Primary</span><span class="code-device">Switch(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">S1(config)#</span> <span class="t-cmd">spanning-tree mode</span> <span class="t-key">pvst</span>
+<span class="t-prompt">S1(config)#</span> <span class="t-imp">spanning-tree vlan 10,20,30,40,50 root primary</span>    <span class="t-comment">! prioridad → 24576</span>
+<span class="t-prompt">S1(config)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">S1#</span> <span class="t-cmd">wr</span>
+            </div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">S2 — Root Secondary (respaldo)</span><span class="code-device">Switch(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">S2(config)#</span> <span class="t-cmd">spanning-tree mode</span> <span class="t-key">pvst</span>
+<span class="t-prompt">S2(config)#</span> <span class="t-imp">spanning-tree vlan 10,20,30,40,50 root secondary</span>  <span class="t-comment">! prioridad → 28672</span>
+<span class="t-prompt">S2(config)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">S2#</span> <span class="t-cmd">wr</span>
+            </div>
+          </div>
+          <div class="show-strip">
+            <span class="show-pill">show spanning-tree</span>
+            <span class="show-pill">show spanning-tree summary</span>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 05 PORT SECURITY -->
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-num"><div class="num-circle">05</div></div>
+      <div class="step-body">
+        <div class="step-header">
+          <span class="step-tag">Port-Security</span>
+          <span class="step-title">Puertos de PC + Port-Security</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-device">S2 y S3 — puertos que conectan a PCs (fa0/1, fa0/2…)</div>
+        <div class="step-desc">Asigna cada puerto a su VLAN, activa PortFast + BPDU Guard y limita cuántas MACs puede aprender.</div>
+        <div class="step-detail"><div class="detail-inner">
+          <div class="why-box">
+            <span class="label">¿Por qué aquí?</span>
+            Las VLANs ya llegaron por VTP, así que podemos asignarlas. Port-Security requiere que el puerto sea <strong>access</strong> primero. Sticky aprende MACs con tráfico: haz ping primero para generar ARP.
+            <div class="no-when"><strong>¿Cuándo NO pongo Port-Security?</strong> Solo en puertos access (PCs). NUNCA en trunks. Si la práctica no menciona seguridad de puertos, omítelo.</div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">S2 / S3 — Puerto de acceso completo (repetir por puerto)</span><span class="code-device">Switch(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">Sx(config)#</span> <span class="t-cmd">interface</span> <span class="t-val">fa0/1</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-cmd">switchport mode</span> <span class="t-key">access</span>           <span class="t-comment">! PRIMERO: definir como access</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-cmd">switchport access vlan</span> <span class="t-num">10</span>          <span class="t-comment">! asignar a su VLAN</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-cmd">switchport nonegotiate</span>              <span class="t-comment">! deshabilita DTP</span>
+
+<span class="t-comment">! ── PortFast + BPDU Guard ──────────────────────</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-imp">spanning-tree portfast</span>              <span class="t-comment">! forwarding inmediato (solo en PCs)</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-imp">spanning-tree bpduguard enable</span>      <span class="t-comment">! err-disable si recibe BPDU</span>
+
+<span class="t-comment">! ── Port-Security ──────────────────────────────</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-imp">switchport port-security</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-cmd">switchport port-security maximum</span> <span class="t-num">2</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-cmd">switchport port-security mac-address</span> <span class="t-key">sticky</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-cmd">switchport port-security violation</span> <span class="t-key">restrict</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-cmd">no shutdown</span>
+<span class="t-prompt">Sx(config-if)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">Sx#</span> <span class="t-cmd">wr</span>
+            </div>
+          </div>
+          <div class="show-strip">
+            <span class="show-pill">show port-security</span>
+            <span class="show-pill">show port-security interface fa0/1</span>
+            <span class="show-pill">show port-security address</span>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 06 ROUTER -->
+    <div class="step-card" onclick="toggleStep(this)">
+      <div class="step-num"><div class="num-circle">06</div></div>
+      <div class="step-body">
+        <div class="step-header">
+          <span class="step-tag">Router</span>
+          <span class="step-title">Router-on-a-Stick + OSPF</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="step-device">R1 → subinterfaces (gateways VLANs) &nbsp;|&nbsp; R1, R2, R3 → OSPF</div>
+        <div class="step-desc">Permite comunicación entre VLANs (R1) y que los tres routers compartan rutas automáticamente.</div>
+        <div class="step-detail"><div class="detail-inner">
+          <div class="why-box">
+            <span class="label">¿Por qué al final?</span>
+            Para que el router reciba tráfico etiquetado de las VLANs, el trunk entre S1-R1 ya debe existir. Cada subinterfaz = gateway de una VLAN.
+            <div class="no-when"><strong>¿Cuándo NO hago Router-on-a-Stick?</strong> Si hay switch L3, o si solo hay una VLAN.<br><strong>¿Cuándo NO hago OSPF?</strong> Si solo hay un router, o la práctica pide rutas estáticas.</div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">R1 — Subinterfaces una por VLAN</span><span class="code-device">Router(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">R1(config)#</span> <span class="t-cmd">interface</span> <span class="t-val">g0/0</span>
+<span class="t-prompt">R1(config-if)#</span> <span class="t-imp">no shutdown</span>                        <span class="t-comment">! CRÍTICO: sin esto todas las subif quedan down</span>
+
+<span class="t-prompt">R1(config)#</span> <span class="t-cmd">interface</span> <span class="t-val">g0/0.10</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-imp">encapsulation dot1Q</span> <span class="t-num">10</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-cmd">ip address</span> <span class="t-val">192.168.10.1 255.255.255.0</span>
+
+<span class="t-prompt">R1(config)#</span> <span class="t-cmd">interface</span> <span class="t-val">g0/0.20</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-cmd">encapsulation dot1Q</span> <span class="t-num">20</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-cmd">ip address</span> <span class="t-val">192.168.20.1 255.255.255.0</span>
+
+<span class="t-prompt">R1(config)#</span> <span class="t-cmd">interface</span> <span class="t-val">g0/0.30</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-cmd">encapsulation dot1Q</span> <span class="t-num">30</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-cmd">ip address</span> <span class="t-val">192.168.30.1 255.255.255.0</span>
+
+<span class="t-prompt">R1(config)#</span> <span class="t-cmd">interface</span> <span class="t-val">g0/0.40</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-cmd">encapsulation dot1Q</span> <span class="t-num">40</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-cmd">ip address</span> <span class="t-val">192.168.40.1 255.255.255.0</span>
+
+<span class="t-prompt">R1(config)#</span> <span class="t-cmd">interface</span> <span class="t-val">g0/0.50</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-cmd">encapsulation dot1Q</span> <span class="t-num">50</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-cmd">ip address</span> <span class="t-val">192.168.50.1 255.255.255.0</span>
+<span class="t-prompt">R1(config-subif)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">R1#</span> <span class="t-cmd">wr</span>
+            </div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">R1 — OSPF (VLANs + enlaces a R2/R3)</span><span class="code-device">Router(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">R1(config)#</span> <span class="t-cmd">router ospf</span> <span class="t-num">1</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-cmd">router-id</span> <span class="t-val">1.1.1.1</span>
+
+<span class="t-comment">! ── enlaces punto a punto hacia R2 y R3 ────────</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-cmd">network</span> <span class="t-val">10.0.12.0 0.0.0.3</span> <span class="t-key">area 0</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-cmd">network</span> <span class="t-val">10.0.13.0 0.0.0.3</span> <span class="t-key">area 0</span>
+
+<span class="t-comment">! ── redes de VLANs ─────────────────────────────</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-cmd">network</span> <span class="t-val">192.168.10.0 0.0.0.255</span> <span class="t-key">area 0</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-cmd">network</span> <span class="t-val">192.168.20.0 0.0.0.255</span> <span class="t-key">area 0</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-cmd">network</span> <span class="t-val">192.168.30.0 0.0.0.255</span> <span class="t-key">area 0</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-cmd">network</span> <span class="t-val">192.168.40.0 0.0.0.255</span> <span class="t-key">area 0</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-cmd">network</span> <span class="t-val">192.168.50.0 0.0.0.255</span> <span class="t-key">area 0</span>
+
+<span class="t-comment">! ── passive en subinterfaces (no forma vecinos con PCs)</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-imp">passive-interface g0/0.10</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-imp">passive-interface g0/0.20</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-imp">passive-interface g0/0.30</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-imp">passive-interface g0/0.40</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-imp">passive-interface g0/0.50</span>
+<span class="t-prompt">R1(config-router)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">R1#</span> <span class="t-cmd">wr</span>
+            </div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-label">R2 y R3 — OSPF básico</span><span class="code-device">Router(config)#</span></div>
+            <div class="code-body">
+<span class="t-prompt">R2(config)#</span> <span class="t-cmd">router ospf</span> <span class="t-num">1</span>
+<span class="t-prompt">R2(config-router)#</span> <span class="t-cmd">router-id</span> <span class="t-val">2.2.2.2</span>
+<span class="t-prompt">R2(config-router)#</span> <span class="t-cmd">network</span> <span class="t-val">10.0.12.0 0.0.0.3</span> <span class="t-key">area 0</span>
+<span class="t-prompt">R2(config-router)#</span> <span class="t-cmd">network</span> <span class="t-val">10.0.23.0 0.0.0.3</span> <span class="t-key">area 0</span>   <span class="t-comment">! si R2-R3 están conectados</span>
+<span class="t-prompt">R2(config-router)#</span> <span class="t-cmd">end</span>
+<span class="t-prompt">R2#</span> <span class="t-cmd">wr</span>
+<span class="t-comment">                                    ! R3: igual con router-id 3.3.3.3</span>
+            </div>
+          </div>
+          <div class="show-strip">
+            <span class="show-pill">show ip interface brief</span>
+            <span class="show-pill">show ip ospf neighbor</span>
+            <span class="show-pill">show ip route ospf</span>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+  </div><!-- end steps -->
+</div>
+
+<!-- ═══ TAB 2 ═══ -->
+<div id="tab-diagrama" class="tab-panel">
+  <div class="diagram-wrap">
+    <div class="diagram-title">Topología de Red Campus</div>
+    <svg class="network" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="400" cy="46" rx="62" ry="26" fill="none" stroke="#ced4da" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="400" y="51" text-anchor="middle" fill="#adb5bd" font-size="11" font-family="IBM Plex Mono">INTERNET</text>
+      <rect x="155" y="125" width="90" height="52" rx="5" fill="#fff" stroke="#3a5a8c" stroke-width="2"/>
+      <text x="200" y="146" text-anchor="middle" fill="#3a5a8c" font-size="13" font-family="IBM Plex Mono" font-weight="700">R1</text>
+      <text x="200" y="163" text-anchor="middle" fill="#6c757d" font-size="9" font-family="IBM Plex Mono">Router-on-Stick</text>
+      <rect x="355" y="125" width="90" height="52" rx="5" fill="#fff" stroke="#3a5a8c" stroke-width="2"/>
+      <text x="400" y="146" text-anchor="middle" fill="#3a5a8c" font-size="13" font-family="IBM Plex Mono" font-weight="700">R2</text>
+      <text x="400" y="163" text-anchor="middle" fill="#6c757d" font-size="9" font-family="IBM Plex Mono">OSPF peer</text>
+      <rect x="555" y="125" width="90" height="52" rx="5" fill="#fff" stroke="#3a5a8c" stroke-width="2"/>
+      <text x="600" y="146" text-anchor="middle" fill="#3a5a8c" font-size="13" font-family="IBM Plex Mono" font-weight="700">R3</text>
+      <text x="600" y="163" text-anchor="middle" fill="#6c757d" font-size="9" font-family="IBM Plex Mono">OSPF peer</text>
+      <line x1="245" y1="151" x2="355" y2="151" stroke="#3a5a8c" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <line x1="445" y1="151" x2="555" y2="151" stroke="#3a5a8c" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="300" y="144" text-anchor="middle" fill="#3a5a8c" font-size="9" font-family="IBM Plex Mono">OSPF</text>
+      <text x="500" y="144" text-anchor="middle" fill="#3a5a8c" font-size="9" font-family="IBM Plex Mono">OSPF</text>
+      <line x1="400" y1="72" x2="400" y2="125" stroke="#dee2e6" stroke-width="1.5"/>
+      <line x1="400" y1="72" x2="200" y2="125" stroke="#dee2e6" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="400" y1="72" x2="600" y2="125" stroke="#dee2e6" stroke-width="1" stroke-dasharray="3,3"/>
+      <rect x="305" y="248" width="190" height="58" rx="5" fill="#fff" stroke="#2d6a4f" stroke-width="2.5"/>
+      <text x="400" y="271" text-anchor="middle" fill="#2d6a4f" font-size="13" font-family="IBM Plex Mono" font-weight="700">S1 — CORE</text>
+      <text x="400" y="291" text-anchor="middle" fill="#6c757d" font-size="9" font-family="IBM Plex Mono">VTP Server · STP Root Primary</text>
+      <line x1="200" y1="177" x2="342" y2="248" stroke="#2d6a4f" stroke-width="2"/>
+      <text x="258" y="216" text-anchor="middle" fill="#2d6a4f" font-size="9" font-family="IBM Plex Mono" transform="rotate(-36,258,216)">TRUNK dot1Q</text>
+      <rect x="95" y="390" width="165" height="55" rx="5" fill="#fff" stroke="#2d6a4f" stroke-width="1.5"/>
+      <text x="177" y="412" text-anchor="middle" fill="#2d6a4f" font-size="12" font-family="IBM Plex Mono" font-weight="700">S2 — Acceso</text>
+      <text x="177" y="430" text-anchor="middle" fill="#6c757d" font-size="9" font-family="IBM Plex Mono">VTP Client · STP Secondary</text>
+      <rect x="540" y="390" width="165" height="55" rx="5" fill="#fff" stroke="#2d6a4f" stroke-width="1.5"/>
+      <text x="622" y="412" text-anchor="middle" fill="#2d6a4f" font-size="12" font-family="IBM Plex Mono" font-weight="700">S3 — Acceso</text>
+      <text x="622" y="430" text-anchor="middle" fill="#6c757d" font-size="9" font-family="IBM Plex Mono">VTP Client</text>
+      <line x1="340" y1="298" x2="218" y2="390" stroke="#2d6a4f" stroke-width="2"/>
+      <text x="264" y="346" text-anchor="middle" fill="#2d6a4f" font-size="9" font-family="IBM Plex Mono" transform="rotate(-53,264,346)">TRUNK</text>
+      <line x1="460" y1="298" x2="580" y2="390" stroke="#2d6a4f" stroke-width="2"/>
+      <text x="538" y="346" text-anchor="middle" fill="#2d6a4f" font-size="9" font-family="IBM Plex Mono" transform="rotate(53,538,346)">TRUNK</text>
+      <circle cx="388" cy="344" r="9" fill="#9b2335" opacity="0.85"/>
+      <text x="388" y="348" text-anchor="middle" fill="white" font-size="7" font-family="IBM Plex Mono" font-weight="700">BLK</text>
+      <text x="404" y="360" fill="#9b2335" font-size="8" font-family="IBM Plex Mono">STP bloquea</text>
+      <rect x="28" y="476" width="56" height="32" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+      <text x="56" y="496" text-anchor="middle" fill="#495057" font-size="10" font-family="IBM Plex Mono">PC-A</text>
+      <text x="56" y="506" text-anchor="middle" fill="#adb5bd" font-size="8" font-family="IBM Plex Mono">VLAN10</text>
+      <rect x="100" y="476" width="56" height="32" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+      <text x="128" y="496" text-anchor="middle" fill="#495057" font-size="10" font-family="IBM Plex Mono">PC-B</text>
+      <text x="128" y="506" text-anchor="middle" fill="#adb5bd" font-size="8" font-family="IBM Plex Mono">VLAN20</text>
+      <rect x="172" y="476" width="56" height="32" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+      <text x="200" y="496" text-anchor="middle" fill="#495057" font-size="10" font-family="IBM Plex Mono">PC-C</text>
+      <text x="200" y="506" text-anchor="middle" fill="#adb5bd" font-size="8" font-family="IBM Plex Mono">VLAN30</text>
+      <rect x="540" y="476" width="56" height="32" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+      <text x="568" y="496" text-anchor="middle" fill="#495057" font-size="10" font-family="IBM Plex Mono">PC-D</text>
+      <text x="568" y="506" text-anchor="middle" fill="#adb5bd" font-size="8" font-family="IBM Plex Mono">VLAN40</text>
+      <rect x="618" y="476" width="56" height="32" rx="4" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+      <text x="646" y="496" text-anchor="middle" fill="#495057" font-size="10" font-family="IBM Plex Mono">PC-E</text>
+      <text x="646" y="506" text-anchor="middle" fill="#adb5bd" font-size="8" font-family="IBM Plex Mono">VLAN50</text>
+      <line x1="152" y1="445" x2="56"  y2="476" stroke="#ced4da" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="163" y1="445" x2="128" y2="476" stroke="#ced4da" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="196" y1="445" x2="200" y2="476" stroke="#ced4da" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="594" y1="445" x2="568" y2="476" stroke="#ced4da" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="638" y1="445" x2="646" y2="476" stroke="#ced4da" stroke-width="1" stroke-dasharray="3,2"/>
+    </svg>
+    <div class="legend-grid">
+      <div class="legend-item"><div class="legend-dot" style="background:#2d6a4f"></div> Switches (core y acceso)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#3a5a8c"></div> Routers R1, R2, R3</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2d6a4f"></div> Enlace Trunk 802.1Q</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#adb5bd"></div> Puerto Access (PCs)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#9b2335"></div> Puerto bloqueado STP</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#3a5a8c; opacity:0.5"></div> Enlace OSPF</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 3 ═══ -->
+<div id="tab-leer" class="tab-panel">
+  <div class="section-title">🔍 Las 7 preguntas para leer cualquier diagrama</div>
+  <div class="question-cards">
+    <div class="q-card">
+      <div class="q-num">01</div>
+      <div class="q-title">¿Cuántos switches hay y cómo se conectan?</div>
+      <div class="q-body">Si hay <span class="hi">2+ switches entre sí</span> → necesitas trunks. Si forman triángulo → configura STP. El switch con más conexiones = core (VTP Server).</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">02</div>
+      <div class="q-title">¿El cable conecta a switch o a PC?</div>
+      <div class="q-body"><span class="hi">Switch ↔ Switch o Switch ↔ Router</span> → trunk. <span class="hi">Switch ↔ PC</span> → access port. Esto define el tipo de cada puerto.</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">03</div>
+      <div class="q-title">¿Hay grupos o etiquetas de VLAN?</div>
+      <div class="q-body">Si hay diferentes grupos de PCs separados → configura <span class="hi">VTP + VLANs</span>. Si todas las PCs están en la misma red → no necesitas VLANs múltiples.</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">04</div>
+      <div class="q-title">¿Las PCs de distintas VLANs deben comunicarse?</div>
+      <div class="q-body">Si sí → necesitas <span class="hi">Router-on-a-Stick</span> (o switch L3). El router conectado al switch core con un trunk tendrá subinterfaces.</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">05</div>
+      <div class="q-title">¿Cuántos routers hay?</div>
+      <div class="q-body">Si hay <span class="hi">2+ routers conectados entre sí</span> → configura OSPF. Si solo hay 1 router → no hay vecinos, no necesitas OSPF.</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">06</div>
+      <div class="q-title">¿Piden seguridad de puertos?</div>
+      <div class="q-body">Si la práctica dice "limitar MACs" o "proteger de switches no autorizados" → <span class="hi">Port-Security + BPDU Guard</span>. Si no lo mencionan, omítelo.</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">07</div>
+      <div class="q-title">¿Qué switch tiene más conexiones?</div>
+      <div class="q-body">El más central = <span class="hi">S1 core</span> (VTP Server, STP Root Primary). Los que solo tienen PCs = <span class="hi">switches de acceso</span> (VTP Client).</div>
+    </div>
+  </div>
+
+  <div class="section-title">⚠️ Reglas de qué NO configurar</div>
+  <div class="question-cards">
+    <div class="q-card danger">
+      <div class="q-title">NO pongas Port-Security en trunks</div>
+      <div class="q-body">Port-Security solo funciona en puertos access. En un trunk da comportamiento inesperado o simplemente falla el comando.</div>
+    </div>
+    <div class="q-card danger">
+      <div class="q-title">NO pongas PortFast en trunks</div>
+      <div class="q-body">PortFast es solo para hosts finales (PCs). En trunks puede causar bucles al saltarse los estados de STP.</div>
+    </div>
+    <div class="q-card danger">
+      <div class="q-title">NO crees VLANs en switches VTP Client</div>
+      <div class="q-body">En modo client el switch solo recibe VLANs. Solo créalas en el servidor (S1). En modo client el comando se rechaza.</div>
+    </div>
+    <div class="q-card danger">
+      <div class="q-title">NO uses passive-interface en enlaces entre routers</div>
+      <div class="q-body">passive-interface impide formar vecinos OSPF. Úsalo solo en subinterfaces hacia VLANs, nunca en los enlaces punto a punto R1↔R2.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 4 ═══ -->
+<div id="tab-ref" class="tab-panel">
+  <div class="ref-grid">
+    <div class="ref-card">
+      <div class="ref-header">VTP</div>
+      <div class="ref-body">
+        <div class="ref-row"><span class="ref-cmd">vtp domain UPEMOR</span><span class="ref-desc">Nombre del dominio (igual en todos)</span></div>
+        <div class="ref-row"><span class="ref-cmd">vtp mode server</span><span class="ref-desc">Rol servidor — S1</span></div>
+        <div class="ref-row"><span class="ref-cmd">vtp mode client</span><span class="ref-desc">Rol cliente — S2/S3</span></div>
+        <div class="ref-row"><span class="ref-cmd">vtp password cisco</span><span class="ref-desc">Contraseña (igual en todos)</span></div>
+        <div class="ref-row"><span class="ref-cmd">vtp version 2</span><span class="ref-desc">Versión VTP</span></div>
+        <div class="ref-row"><span class="ref-cmd">show vtp status</span><span class="ref-desc">Ver dominio, modo, revisión</span></div>
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-header">VLANs</div>
+      <div class="ref-body">
+        <div class="ref-row"><span class="ref-cmd">vlan 10</span><span class="ref-desc">Crear / entrar a VLAN</span></div>
+        <div class="ref-row"><span class="ref-cmd">name ADMIN</span><span class="ref-desc">Nombrar VLAN</span></div>
+        <div class="ref-row"><span class="ref-cmd">show vlan brief</span><span class="ref-desc">Ver VLANs y puertos asignados</span></div>
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-header">Trunks</div>
+      <div class="ref-body">
+        <div class="ref-row"><span class="ref-cmd">switchport mode trunk</span><span class="ref-desc">Forzar trunk</span></div>
+        <div class="ref-row"><span class="ref-cmd">sw trunk allowed vlan 10,20,30,40,50</span><span class="ref-desc">VLANs permitidas</span></div>
+        <div class="ref-row"><span class="ref-cmd">show interfaces trunk</span><span class="ref-desc">Ver trunks activos</span></div>
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-header">STP — PVST</div>
+      <div class="ref-body">
+        <div class="ref-row"><span class="ref-cmd">spanning-tree mode pvst</span><span class="ref-desc">Activar PVST</span></div>
+        <div class="ref-row"><span class="ref-cmd">spanning-tree vlan X root primary</span><span class="ref-desc">Ser root bridge</span></div>
+        <div class="ref-row"><span class="ref-cmd">spanning-tree vlan X root secondary</span><span class="ref-desc">Root de respaldo</span></div>
+        <div class="ref-row"><span class="ref-cmd">show spanning-tree</span><span class="ref-desc">Ver estados FWD / BLK</span></div>
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-header">Port-Security</div>
+      <div class="ref-body">
+        <div class="ref-row"><span class="ref-cmd">switchport mode access</span><span class="ref-desc">Requisito previo</span></div>
+        <div class="ref-row"><span class="ref-cmd">spanning-tree portfast</span><span class="ref-desc">Forwarding inmediato</span></div>
+        <div class="ref-row"><span class="ref-cmd">spanning-tree bpduguard enable</span><span class="ref-desc">Proteger contra switches</span></div>
+        <div class="ref-row"><span class="ref-cmd">switchport port-security</span><span class="ref-desc">Habilitar</span></div>
+        <div class="ref-row"><span class="ref-cmd">... maximum 2</span><span class="ref-desc">Máx MACs permitidas</span></div>
+        <div class="ref-row"><span class="ref-cmd">... mac-address sticky</span><span class="ref-desc">Aprender MACs dinámico</span></div>
+        <div class="ref-row"><span class="ref-cmd">... violation restrict</span><span class="ref-desc">Bloquea sin err-disable</span></div>
+        <div class="ref-row"><span class="ref-cmd">show port-security int fa0/x</span><span class="ref-desc">Estado del puerto</span></div>
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-header">Router-on-a-Stick</div>
+      <div class="ref-body">
+        <div class="ref-row"><span class="ref-cmd">interface g0/0 → no shutdown</span><span class="ref-desc">Físico primero — crítico</span></div>
+        <div class="ref-row"><span class="ref-cmd">interface g0/0.10</span><span class="ref-desc">Subinterfaz para VLAN 10</span></div>
+        <div class="ref-row"><span class="ref-cmd">encapsulation dot1Q 10</span><span class="ref-desc">Asociar a VLAN</span></div>
+        <div class="ref-row"><span class="ref-cmd">ip address 192.168.10.1 255.255.255.0</span><span class="ref-desc">Gateway de la VLAN</span></div>
+        <div class="ref-row"><span class="ref-cmd">show ip interface brief</span><span class="ref-desc">Verificar up/up</span></div>
+      </div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-header">OSPF</div>
+      <div class="ref-body">
+        <div class="ref-row"><span class="ref-cmd">router ospf 1</span><span class="ref-desc">Crear proceso (número local)</span></div>
+        <div class="ref-row"><span class="ref-cmd">router-id 1.1.1.1</span><span class="ref-desc">ID único por router</span></div>
+        <div class="ref-row"><span class="ref-cmd">network X.X.X.X wildcard area 0</span><span class="ref-desc">Anunciar red en área 0</span></div>
+        <div class="ref-row"><span class="ref-cmd">passive-interface g0/0.10</span><span class="ref-desc">Sin vecinos en LAN/VLAN</span></div>
+        <div class="ref-row"><span class="ref-cmd">show ip ospf neighbor</span><span class="ref-desc">Ver vecinos (estado FULL)</span></div>
+        <div class="ref-row"><span class="ref-cmd">show ip route ospf</span><span class="ref-desc">Ver rutas aprendidas</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+  function toggleStep(card) {
+    const wasOpen = card.classList.contains('open');
+    document.querySelectorAll('.step-card').forEach(c => c.classList.remove('open'));
+    if (!wasOpen) card.classList.add('open');
+  }
+  let allOpen = false;
+  function toggleAll(btn) {
+    allOpen = !allOpen;
+    document.querySelectorAll('.step-card').forEach(c => allOpen ? c.classList.add('open') : c.classList.remove('open'));
+    btn.textContent = allOpen ? '▲ Contraer todos los pasos' : '▼ Expandir todos los pasos';
+  }
+</script>
+</body>
+</html>
